@@ -22,12 +22,20 @@ func main() {
 	fmt.Println(f1)
 	fmt.Println("=========================================================================")
 
+	// slices
 	var nrMovies int = 3
 	var movies []*Movie
 
 	movies = append(movies, &f1)
 	movies = append(movies, &Movie{2, 100, "Interstellar", 30.5, 16})
 	movies = append(movies, &Movie{3, 90, "Fight Club", 20, 16})
+
+	// arrays (with strict length)
+	// but you have to modify ShowVector parameter from vector[]*Movie to vector[3]*Movie
+	//movies := [3]*Movie{}
+	//movies[0] = &f1
+	//movies[1] = &Movie{2, 100, "Interstellar", 30.5, 16}
+	//movies[2] = &Movie{3, 90, "Fight Club", 20, 16}
 
 	ShowVector(movies, nrMovies)
 }
