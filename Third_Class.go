@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
 type Car struct {
 	id         int
@@ -22,6 +26,26 @@ func addNewCar(vector *[]*Car, newCar *Car) []*Car {
 	return *vector
 }
 
+//// Reading files requires checking most calls for errors
+//func check(e error) {
+//	if e != nil {
+//		panic(e)
+//	}
+//}
+
+func readCarFromFile(fptr *os.File) {
+	reader := bufio.NewReader(fptr)
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			if err.Error() == "EOF" {
+				break
+			}
+		}
+		fmt.Println(line)
+	}
+}
+
 func main() {
 
 	cars := []*Car{
@@ -39,4 +63,13 @@ func main() {
 
 	fmt.Println("==============================================")
 
+	file, err := os.Open("cars.txt")
+	if err != nil {
+		fmt.Println("Error opening file...")
+	}
+	defer file.Close()
+
+	readCarFromFile(file)
+
+	fmt.Println("==============================================")
 }
