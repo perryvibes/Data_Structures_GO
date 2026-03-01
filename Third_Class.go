@@ -33,7 +33,7 @@ func addNewCar(vector *[]*Car, newCar *Car) []*Car {
 //	}
 //}
 
-func readCarFromFile(fptr *os.File) {
+func readCarsFromFile(fptr *os.File) {
 	reader := bufio.NewReader(fptr)
 	for {
 		line, err := reader.ReadString('\n')
@@ -69,7 +69,7 @@ func main() {
 	}
 	defer file.Close()
 
-	readCarFromFile(file)
-
+	readCarsFromFile(file)
+	// TO DO Last line unread
 	fmt.Println("==============================================")
 }
