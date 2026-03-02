@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -26,23 +27,14 @@ func addNewCar(vector *[]*Car, newCar *Car) []*Car {
 	return *vector
 }
 
-//// Reading files requires checking most calls for errors
-//func check(e error) {
-//	if e != nil {
-//		panic(e)
-//	}
-//}
-
 func readCarsFromFile(fptr *os.File) {
-	reader := bufio.NewReader(fptr)
-	for {
-		line, err := reader.ReadString('\n')
-		if err != nil {
-			if err.Error() == "EOF" {
-				break
-			}
-		}
+	scanner := bufio.NewScanner(fptr)
+	for scanner.Scan() {
+		line := scanner.Text()
 		fmt.Println(line)
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalf("error reading file: %s", err)
 	}
 }
 
@@ -68,8 +60,7 @@ func main() {
 		fmt.Println("Error opening file...")
 	}
 	defer file.Close()
-
 	readCarsFromFile(file)
-	// TO DO Last line unread
+
 	fmt.Println("==============================================")
 }
