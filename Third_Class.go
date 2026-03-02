@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
 type Car struct {
 	id         int
 	nrDoors    int
-	price      float32
+	price      float64
 	model      string
 	driverName string
 	series     rune
@@ -27,15 +29,25 @@ func addNewCar(vector *[]*Car, newCar *Car) []*Car {
 	return *vector
 }
 
-func readCarsFromFile(fptr *os.File) {
+func readCarsFromFile(fptr *os.File) []Car {
+	var cars []Car
+	var scannedCar Car
 	scanner := bufio.NewScanner(fptr)
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println(line)
+		carDetails := strings.Split(line, ",")
+		scannedCar.id, _ = strconv.Atoi(carDetails[0])
+		scannedCar.nrDoors, _ = strconv.Atoi(carDetails[1])
+		scannedCar.price, _ = strconv.ParseFloat(carDetails[2], 64)
+		scannedCar.model = carDetails[3]
+		scannedCar.driverName = carDetails[4]
+		scannedCar.series = []rune(carDetails[5])[0]
+		cars = append(cars, scannedCar)
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("error reading file: %s", err)
 	}
+	return cars
 }
 
 func main() {
@@ -60,7 +72,10 @@ func main() {
 		fmt.Println("Error opening file...")
 	}
 	defer file.Close()
-	readCarsFromFile(file)
+
+	for _, value := range readCarsFromFile(file) {
+		fmt.Println(value)
+	}
 
 	fmt.Println("==============================================")
 }
