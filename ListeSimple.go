@@ -46,10 +46,22 @@ func citireMasiniDinFisier(fptr *os.File) []Masina {
 	return masini
 }
 
-// Functia de afisare Masini
-func afisareMasini(vector []Masina) {
-	for _, value := range vector {
-		fmt.Println(value)
+// Functia de afisare Masina
+func afisareMasina(masina Masina) {
+	fmt.Sprintf("Id: %d\n", masina.id);
+	fmt.Sprintf("Nr. usi : %d\n", masina.nrUsi);
+	fmt.Sprintf("Pret: %.2f\n", masina.pret);
+	fmt.Sprintf("Model: %s\n", masina.model);
+	fmt.Sprintf("Nume sofer: %s\n", masina.numeSofer);
+	fmt.Sprintf("Serie: %c\n\n", masina.serie);
+}
+
+// Functia de afisare lista de masini
+
+func afisareListaMasini(lista *Nod) {
+	for lista != nil {
+		afisareMasina(*lista.masina)
+		lista = lista.next
 	}
 }
 
@@ -69,6 +81,22 @@ func adaugaMasinaInLista(cap **Nod, masinaNoua Masina) {
 	}
 }
 
+func citireListaMasinaDinFisier(numeFisier string) *Nod {
+	file, err := os.Open(numeFisier)
+	var lista *Nod = nil
+	if err != nil {
+		fmt.Println("Error opening file!")
+	}
+	for _,value := range citireMasiniDinFisier(file) {
+		adaugaMasinaInLista(&lista,value)
+	}
+	defer file.Close()
+	return lista
+}
+
 func main() {
+
+	cap := citireListaMasinaDinFisier("cars.txt")
+	afisareListaMasini(cap)
 
 }
