@@ -19,7 +19,7 @@ type Masina struct {
 }
 
 type Nod struct {
-	masina *Masina
+	masina Masina
 	next   *Nod
 }
 
@@ -60,7 +60,7 @@ func afisareMasina(masina Masina) {
 
 func afisareListaMasini(lista *Nod) {
 	for lista != nil {
-		afisareMasina(*lista.masina)
+		afisareMasina(lista.masina)
 		lista = lista.next
 	}
 }
@@ -68,7 +68,7 @@ func afisareListaMasini(lista *Nod) {
 // adaugare la final
 func adaugaMasinaInListaFinal(cap **Nod, masinaNoua Masina) {
 	nou := &Nod{
-		masina: &masinaNoua,
+		masina: masinaNoua,
 		next:   nil,
 	}
 	if (*cap) == nil {
@@ -85,7 +85,7 @@ func adaugaMasinaInListaFinal(cap **Nod, masinaNoua Masina) {
 // adaugare la inceput
 func adaugaMasinaInListaInceput(cap **Nod, masinaNoua Masina) {
 	nou := &Nod{
-		masina: &masinaNoua,
+		masina: masinaNoua,
 		next:   nil,
 	}
 	if (*cap) == nil {
