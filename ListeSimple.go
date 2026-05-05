@@ -143,6 +143,34 @@ func stergeMasiniDinSerie(lista **Nod, idCautat int) {
 	}
 }
 
+func calcularePretMasinaUnuiSofer(lista *Nod, nume string) float64 {
+	var pretTotal float64 = 0
+	for lista != nil {
+		if lista.masina.numeSofer == nume {
+			pretTotal += lista.masina.pret
+		}
+		lista = lista.next
+	}
+	return pretTotal
+}
+
+func getCeaMaiScumpaMasina(lista *Nod) string {
+	if lista == nil {
+		return "N/A"
+	} else {
+		var nodMax *Nod = lista
+		for lista != nil {
+			if lista.masina.pret > nodMax.masina.pret {
+				nodMax = lista
+			}
+			lista = lista.next
+		}
+		return nodMax.masina.model
+	}
+}
+
+// Functia de dezalocare nu o mai construim deoarece GO are Garbage Collector.
+
 func main() {
 
 	cap := citireListaMasinaDinFisier("cars.txt")
@@ -153,5 +181,6 @@ func main() {
 	stergeMasiniDinSerie(&cap, 10)
 	afisareListaMasini(cap)
 	fmt.Println("=========================")
-
+	fmt.Printf("Cea mai scumpa masina este: %s\n", getCeaMaiScumpaMasina(cap))
+	fmt.Println("=========================")
 }
