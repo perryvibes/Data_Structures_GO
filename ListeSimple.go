@@ -48,12 +48,12 @@ func citireMasiniDinFisier(fptr *os.File) []Masina {
 
 // Functia de afisare Masina
 func afisareMasina(masina Masina) {
-	fmt.Sprintf("Id: %d\n", masina.id);
-	fmt.Sprintf("Nr. usi : %d\n", masina.nrUsi);
-	fmt.Sprintf("Pret: %.2f\n", masina.pret);
-	fmt.Sprintf("Model: %s\n", masina.model);
-	fmt.Sprintf("Nume sofer: %s\n", masina.numeSofer);
-	fmt.Sprintf("Serie: %c\n\n", masina.serie);
+	fmt.Printf("Id: %d\n", masina.id)
+	fmt.Printf("Nr. usi : %d\n", masina.nrUsi)
+	fmt.Printf("Pret: %.2f\n", masina.pret)
+	fmt.Printf("Model: %s\n", masina.model)
+	fmt.Printf("Nume sofer: %s\n", masina.numeSofer)
+	fmt.Printf("Serie: %c\n\n", masina.serie)
 }
 
 // Functia de afisare lista de masini
@@ -66,18 +66,33 @@ func afisareListaMasini(lista *Nod) {
 }
 
 // adaugare la final
-func adaugaMasinaInLista(cap **Nod, masinaNoua Masina) {
-	var nou *Nod
-	nou.masina = &masinaNoua
-	nou.next = nil
+func adaugaMasinaInListaFinal(cap **Nod, masinaNoua Masina) {
+	nou := &Nod{
+		masina: &masinaNoua,
+		next:   nil,
+	}
 	if (*cap) == nil {
 		(*cap) = nou
 	} else {
-		var p *Nod = (*cap)
+		p := *cap
 		for p.next != nil {
 			p = p.next
 		}
 		p.next = nou
+	}
+}
+
+// adaugare la inceput
+func adaugaMasinaInListaInceput(cap **Nod, masinaNoua Masina) {
+	nou := &Nod{
+		masina: &masinaNoua,
+		next:   nil,
+	}
+	if (*cap) == nil {
+		*cap = nou
+	} else {
+		nou.next = *cap
+		*cap = nou
 	}
 }
 
@@ -87,16 +102,56 @@ func citireListaMasinaDinFisier(numeFisier string) *Nod {
 	if err != nil {
 		fmt.Println("Error opening file!")
 	}
-	for _,value := range citireMasiniDinFisier(file) {
-		adaugaMasinaInLista(&lista,value)
+	for _, value := range citireMasiniDinFisier(file) {
+		adaugaMasinaInListaFinal(&lista, value)
 	}
 	defer file.Close()
 	return lista
+}
+
+func calculeazaPretMediu(lista *Nod) float64 {
+	var sum float64
+	var count float64
+	for lista != nil {
+		sum += lista.masina.pret
+		count++
+		lista = lista.next
+	}
+	return sum / count
+}
+
+func stergeMasiniDinSerie(lista **Nod, idCautat int) {
+	if (*lista) == nil {
+		return
+	}
+	for *lista != nil && (*lista).masina.id == idCautat {
+		// go nu are deallocate deci vom rupe legaturile nodului si GC se va ocupa de dezalocare
+		*lista = (*lista).next
+	}
+	if *lista != nil {
+		var nodAnterior *Nod = *lista
+		var nodCurent *Nod = (*lista).next
+		for nodCurent != nil {
+			if nodCurent.masina.id == idCautat {
+				nodAnterior.next = nodCurent.next
+				nodCurent = nodCurent.next
+			} else {
+				nodAnterior = nodCurent
+				nodCurent = nodCurent.next
+			}
+		}
+	}
 }
 
 func main() {
 
 	cap := citireListaMasinaDinFisier("cars.txt")
 	afisareListaMasini(cap)
+	fmt.Println("=========================")
+	fmt.Printf("Pretul mediu: %.2f\n", calculeazaPretMediu(cap))
+	fmt.Println("=========================")
+	stergeMasiniDinSerie(&cap, 10)
+	afisareListaMasini(cap)
+	fmt.Println("=========================")
 
 }
